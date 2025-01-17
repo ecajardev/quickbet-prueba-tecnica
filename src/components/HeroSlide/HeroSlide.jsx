@@ -5,7 +5,7 @@ import { Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import Button, { OutlineButton } from '../Button/Button';
-import Modal, { ModalContent } from '../modal/Modal';
+import Modal, { ModalContent } from '../Modal/Modal';
 
 import tmdbApi, { category, movieType } from '../../api/tmdbApi';
 import apiConfig from '../../api/apiConfig';
