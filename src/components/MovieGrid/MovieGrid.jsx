@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useHistory, useParams, withRouter } from 'react-router-dom';
+import { useParams, withRouter } from 'react-router-dom';
 
 import './movieGrid.scss';
 
