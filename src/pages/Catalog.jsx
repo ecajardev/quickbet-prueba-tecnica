@@ -1,6 +1,6 @@
 import { useParams } from 'react-router';
 
-import PageHeader from '../components/pageHeader/PageHeader';
+import PageHeader from '../components/PageHeader/PageHeader';
 
 import { category as cate } from '../api/tmdbApi';
 import MovieGrid from '../components/MovieGrid/MovieGrid';
