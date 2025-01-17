@@ -11,89 +11,89 @@ import tmdbApi, { category, movieType, tvType } from '../../api/tmdbApi';
 
 const MovieGrid = props => {
 
-  const [items, setItems] = useState([]);
+    const [items, setItems] = useState([]);
 
-  const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
+    const [page, setPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(0);
 
-  const { keyword } = useParams();
+    const { keyword } = useParams();
 
-  useEffect(() => {
-    const getList = async () => {
+    useEffect(() => {
+        const getList = async () => {
+            try {
+                let response = null;
+                if (keyword === undefined) {
+                    const params = {};
+                    switch (props.category) {
+                        case category.movie:
+                            response = await tmdbApi.getMoviesList(movieType.upcoming, { params });
+                            break;
+                        default:
+                            response = await tmdbApi.getTvList(tvType.popular, { params });
+                    }
+                } else {
+                    const params = {
+                        query: keyword
+                    }
+                    response = await tmdbApi.search(props.category, { params });
+                }
+                setItems(response.results);
+                setTotalPage(response.total_pages);
+                setPage(1);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+        getList();
+    }, [props.category, keyword]);
+
+    const loadMore = async () => {
         try {
             let response = null;
             if (keyword === undefined) {
-                const params = {};
-                switch(props.category) {
+                const params = {
+                    page: page + 1
+                };
+                switch (props.category) {
                     case category.movie:
-                        response = await tmdbApi.getMoviesList(movieType.upcoming, {params});
+                        response = await tmdbApi.getMoviesList(movieType.upcoming, { params });
                         break;
                     default:
-                        response = await tmdbApi.getTvList(tvType.popular, {params});
+                        response = await tmdbApi.getTvList(tvType.popular, { params });
                 }
             } else {
                 const params = {
+                    page: page + 1,
                     query: keyword
                 }
-                response = await tmdbApi.search(props.category, {params});
+                response = await tmdbApi.search(props.category, { params });
             }
-            setItems(response.results);
-            setTotalPage(response.total_pages);
-            setPage(1);
+            setItems([...items, ...response.results]);
+            setPage(page + 1);
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error('Error loading more:', error);
         }
     }
-    getList();
-  }, [props.category, keyword]);
 
-const loadMore = async () => {
-    try {
-        let response = null;
-        if (keyword === undefined) {
-            const params = {
-                page: page + 1
-            };
-            switch(props.category) {
-                case category.movie:
-                    response = await tmdbApi.getMoviesList(movieType.upcoming, {params});
-                    break;
-                default:
-                    response = await tmdbApi.getTvList(tvType.popular, {params});
-            }
-        } else {
-            const params = {
-                page: page + 1,
-                query: keyword
-            }
-            response = await tmdbApi.search(props.category, {params});
-        }
-        setItems([...items, ...response.results]);
-        setPage(page + 1);
-    } catch (error) {
-        console.error('Error loading more:', error);
-    }
-}
-
-return (
-    <>
-        <div className="section mb-3">
-            <MovieSearch category={props.category} keyword={keyword}/>
-        </div>
-        <div className="movie-grid">
+    return (
+        <>
+            <div className="section mb-3">
+                <MovieSearch category={props.category} keyword={keyword} />
+            </div>
+            <div className="movie-grid">
+                {
+                    items.map((item, i) => <MovieCard category={props.category} item={item} key={i} />)
+                }
+            </div>
             {
-                items.map((item, i) => <MovieCard category={props.category} item={item} key={i}/>)
+                page < totalPage ? (
+                    <div className="movie-grid__loadmore">
+                        <OutlineButton className="small" onClick={loadMore}>Load more</OutlineButton>
+                    </div>
+                ) : null
             }
-        </div>
-        {
-            page < totalPage ? (
-                <div className="movie-grid__loadmore">
-                    <OutlineButton className="small" onClick={loadMore}>Load more</OutlineButton>
-                </div>
-            ) : null
-        }
-    </>
-);
+        </>
+    );
 }
 
 const MovieSearch = withRouter(({ history, category: propCategory, keyword: propKeyword }) => {

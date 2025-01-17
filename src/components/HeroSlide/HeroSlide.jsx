@@ -4,7 +4,7 @@ import 'swiper/css';
 import { Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import Button, { OutlineButton } from '../Button/Button';
+import { OutlineButton } from '../Button/Button';
 import Modal, { ModalContent } from '../Modal/Modal';
 
 import tmdbApi, { category, movieType } from '../../api/tmdbApi';
@@ -87,9 +87,6 @@ const HeroSlideItem = props => {
                     <h2 className="title">{item.title}</h2>
                     <div className="overview">{item.overview}</div>
                     <div className="btns">
-                        <Button onClick={() => navigate.push('/movie/' + item.id)}>
-                            Watch now
-                        </Button>
                         <OutlineButton onClick={setModalActive}>
                             Watch trailer
                         </OutlineButton>
