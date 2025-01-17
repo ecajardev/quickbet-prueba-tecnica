@@ -1,5 +1,5 @@
 import { Link, withRouter } from 'react-router-dom';
-import '../MovieCard/movieCard.scss';
+import './movieCard.scss';
 import Button from '../Button/Button';
 
 import { category } from '../../api/tmdbApi';
